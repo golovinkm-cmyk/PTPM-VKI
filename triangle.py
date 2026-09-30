@@ -7,7 +7,8 @@ logger = logging.getLogger("PTPM-VKI")
 FIELD_SIZE = 100   # поле отрисовки 100x100 px
 MARGIN = 5         # отступ от краёв поля
 
-
+# Количество знаков после запятой для округления при сравнении
+PRECISION = 9
 
 
 def _parse_side(raw: str, name: str) -> Optional[float]:
@@ -25,7 +26,10 @@ def _parse_side(raw: str, name: str) -> Optional[float]:
 
 def _classify(a: float, b: float, c: float) -> str:
     """Определяет вид треугольника по трём сторонам."""
-    if a + b <= c or a + c <= b or b + c <= a:
+
+    if (round(a + b, PRECISION) <= round(c, PRECISION)
+            or round(a + c, PRECISION) <= round(b, PRECISION)
+            or round(b + c, PRECISION) <= round(a, PRECISION)):
         return "не треугольник"
     if a == b == c:
         return "равносторонний"
@@ -38,15 +42,15 @@ def _classify(a: float, b: float, c: float) -> str:
 
 def _build_coords(a: float, b: float, c: float) -> List[Tuple[int, int]]:
     """
-    Считает координаты 3 вершин и вписывает треугольник в поле 100x100.
+    Считает координаты 3 вершин
     Самая длинная сторона кладётся горизонтально как основание.
     """
-    sides = sorted([a, b, c])   # [малая, средняя, большая]
+    sides = sorted([a, b, c])
     base = sides[2]             # основание (горизонтально)
-    r_left = sides[1]           # радиус из P1
-    r_right = sides[0]          # радиус из P2
+    r_left = sides[1]
+    r_right = sides[0]
 
-    # Пересечение двух окружностей радиуса r_left (из P1) и r_right (из P2)
+    # Пересечение двух окружностей радиуса r_left  и r_right
     x3 = (base ** 2 + r_left ** 2 - r_right ** 2) / (2 * base)
     y3 = math.sqrt(max(r_left ** 2 - x3 ** 2, 0.0))
 

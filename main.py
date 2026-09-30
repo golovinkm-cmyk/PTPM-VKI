@@ -6,14 +6,27 @@ def main() -> None:
     logger = setup_logger()
     logger.info("Приложение запущено")
 
-    raw_a = input("Сторона A: ")
-    raw_b = input("Сторона B: ")
-    raw_c = input("Сторона C: ")
+    while True:
+        print("\n--- Новый треугольник (Enter без ввода — выход) ---")
 
-    kind, coords = process_triangle(raw_a, raw_b, raw_c)
+        raw_a = input("Сторона A: ").strip()
+        # выход, если пользователь ничего не ввёл
+        if raw_a == "":
+            logger.info("Пользователь завершил работу (пустой ввод)")
+            break
 
-    print(kind)
-    print(coords)
+        raw_b = input("Сторона B: ").strip()
+        raw_c = input("Сторона C: ").strip()
+
+        # можно также разрешить команды выхода на любом шаге
+        if raw_b.lower() in ("exit", "quit") or raw_c.lower() in ("exit", "quit"):
+            logger.info("Пользователь завершил работу (команда выхода)")
+            break
+
+        kind, coords = process_triangle(raw_a, raw_b, raw_c)
+
+        print(f"Вид: {kind}")
+        print(f"Координаты: {coords}")
 
     logger.info("Приложение завершило работу")
 
